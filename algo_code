@@ -1,0 +1,84 @@
+Sub solve()
+Dim i As Integer, j As Integer, k As Integer, l As Integer
+Dim t As Integer, v As Integer, w As Integer
+Dim rng As String, rng2 As String
+
+Dim StartTime As Double
+Dim MinutesElapsed As String
+
+StartTime = Timer
+
+t = 1
+v = 1
+
+On Error GoTo ErrorHandler
+For i = 2 To 10
+ For j = 2 To 10
+ If Sheets(1).Cells(i, j) = "" Then
+  Sheets(2).Cells(v, 1) = Sheets(1).Cells(i, j).Address
+  Sheets(2).Cells(v, 2) = Sheets(1).Cells(i, j + 11).Address
+ v = v + 1
+ End If
+ 
+ Next j
+ 
+Next i
+
+For l = 1 To Sheets(2).Range("A1").SpecialCells(xlCellTypeLastCell).Row
+If k < 10 Then
+ rng = Sheets(2).Range("A" & l)
+ rng2 = Sheets(2).Range("B" & l)
+  For k = 1 To 9
+   Sheets(1).Range(rng).Value = k
+   If Sheets(1).Range(rng2).Value = "False" Then
+   Sheets(2).Range("C" & l) = k
+   Exit For
+   End If
+  Next k
+   If k = 10 Then 'if none of the values match, the value of k becomes 10 them    this section tells us to move to next part
+   l = l - 1
+   w = Sheets(2).Range("C" & l) + 1
+  
+   l = l - 1
+   
+   Sheets(1).Range(rng).ClearContents
+   End If
+ Else
+ 
+ If w = 10 Then GoTo skipL
+  For k = w To 9
+  rng = Sheets(2).Range("A" & l)
+  rng2 = Sheets(2).Range("B" & l)
+   Sheets(1).Range(rng).Value = k
+   If Sheets(1).Range(rng2).Value = "False" Then
+   Sheets(2).Range("C" & l) = k
+   Exit For
+   
+   End If
+  Next k
+  If k = 10 Then
+  Sheets(1).Range(rng).ClearContents
+  Sheets(2).Range("C" & l).ClearContents
+  l = l - 1
+  w = Sheets(2).Range("C" & l) + 1
+  l = l - 1
+  GoTo MoveN
+ End If
+ GoTo MoveN
+skipL:
+  rng = Sheets(2).Range("A" & l)
+  Sheets(1).Range(rng).ClearContents
+  Sheets(2).Range("C" & l).ClearContents
+  l = l - 1
+  w = Sheets(2).Range("C" & l) + 1
+  l = l - 1
+End If
+MoveN:
+Next l
+Sheets(2).Range("A:C").ClearContents
+
+ErrorHandler:
+Sheets(2).Range("A:C").ClearContents
+MinutesElapsed = Format((Timer - StartTime) / 86400, "hh:mm:ss")
+MsgBox "Come On! You have solved the sudoku in " & MinutesElapsed & " minutes", vbInformation
+End Sub
